@@ -1,8 +1,11 @@
 package view;
 
-import dao.DatabaseConnection;
-
 import javax.swing.*;
+
+import gym.DatabaseConnection;
+
+import dao.AlunoDao;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,19 +18,13 @@ import java.util.Date;
 
 public class AlunoView {
 
-    private static final String INSERT_ALUNO_QUERY = "INSERT INTO aluno (cpf, nome, data_nascimento, peso, altura) VALUES (?, ?, ?, ?, ?)";
-
-    private final DatabaseConnection databaseConnection;
-    private final Connection connection;
-
-    public AlunoView() {
-        databaseConnection = new DatabaseConnection();
-        connection = databaseConnection.getConnection();
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new AlunoView().createAndShowGUI());
-    }
+	private static final String INSERT_ALUNO_QUERY = "INSERT INTO aluno (cpf, nome, data_nascimento, peso, altura) VALUES (?, ?, ?, ?, ?)";
+	
+    private Connection connection;
+	   
+    public AlunoView(){ 
+        this.connection = new DatabaseConnection().getConnection();
+    } 
 
     private void createAndShowGUI() {
         JFrame frame = new JFrame("Cadastro de Aluno");
@@ -95,9 +92,9 @@ public class AlunoView {
         frame.setVisible(true);
     }
 
-    private void cadastrarAluno(String cpf, String nome, String dataNascimento, String peso, String altura) {
+    public void cadastrarAluno(String cpf, String nome, String dataNascimento, String peso, String altura) {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             Date dataNascimentoDate = sdf.parse(dataNascimento);
 
             // Preparar a instrução SQL para inserção
@@ -120,7 +117,7 @@ public class AlunoView {
         }
     }
 
-    private void consultarAluno(String cpf) {
+	private void consultarAluno(String cpf) {
         // Implementar lógica para consultar aluno
         // Você pode chamar os métodos da classe Aluno aqui
     }

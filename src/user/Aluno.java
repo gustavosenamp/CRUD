@@ -58,21 +58,5 @@ public class Aluno {
 		this.altura = altura;
 	}
 	
-	 public void inserir() {
-	        // Implementar lógica para inserir aluno no banco de dados
-		 
-	 }
-
-	 public void excluir() {
-	        // Implementar lógica para excluir aluno no banco de dados
-	 }
-
-	 public void atualizar() {
-	        // Implementar lógica para atualizar aluno no banco de dados
-	 }
-
-	 public void consultar() {
-	        // Implementar lógica para consultar aluno no banco de dados
-	 }
 	
 }

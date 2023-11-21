@@ -20,7 +20,7 @@ public class TelaHistorico extends JFrame {
     private DefaultTableModel modeloTabela;
 
     public TelaHistorico(List<Historico> historicos) {
-        // Configurações da janela
+        // Configuraçoes da janela
         setTitle("Histórico");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

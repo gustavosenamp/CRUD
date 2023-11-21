@@ -18,13 +18,8 @@ import gym.DatabaseConnection;
 
 public class TelaCadastrar extends JFrame implements ActionListener{
 	
-	public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
-
-    private static void createAndShowGUI() {
-        JFrame frame = new JFrame("Register");
+    public TelaCadastrar() {
+        JFrame frame = new JFrame("Cadastro");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -58,11 +53,6 @@ public class TelaCadastrar extends JFrame implements ActionListener{
         alturaLabel.setFont(labelFont);
         JTextField alturaField = new JTextField(5);
         alturaField.setFont(textFieldFont);
-        
-        JLabel senhaLabel = new JLabel("Senha:");
-        senhaLabel.setFont(labelFont);
-        JTextField senhaField = new JTextField(5);
-        senhaField.setFont(textFieldFont);
 
         JButton cadastrarButton = new JButton("Cadastrar");
         JButton voltarButton = new JButton("Voltar");
@@ -77,8 +67,6 @@ public class TelaCadastrar extends JFrame implements ActionListener{
         formPanel.add(pesoField);
         formPanel.add(alturaLabel);
         formPanel.add(alturaField);
-        formPanel.add(senhaLabel);
-        formPanel.add(senhaField);
 
 
         JPanel buttonPanel = new JPanel(new FlowLayout());

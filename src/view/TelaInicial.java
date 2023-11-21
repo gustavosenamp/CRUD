@@ -5,13 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class TelaInicial {
+public class TelaInicial extends JFrame {
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
-    private static void createAndShowGUI() {
+    public TelaInicial() {
         JFrame frame = new JFrame("Gym Management System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);

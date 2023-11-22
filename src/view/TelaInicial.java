@@ -12,6 +12,9 @@ public class TelaInicial extends JFrame {
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
+        setResizable(true);
+        setLocationRelativeTo(null);
+        
         // Create a title label
         JLabel titleLabel = new JLabel("Bem-vindo a Academia");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 15));
@@ -31,7 +34,6 @@ public class TelaInicial extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Add your logic for the register button here
             	dispose();
                 new TelaCadastrar();
             }

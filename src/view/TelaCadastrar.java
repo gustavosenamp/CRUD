@@ -6,15 +6,22 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import dao.AlunoDao;
+import dao.HistoricoDao;
 import gym.DatabaseConnection;
+import user.Aluno;
+import user.Historico;
 
 public class TelaCadastrar extends JFrame implements ActionListener{
 	
@@ -76,17 +83,43 @@ public class TelaCadastrar extends JFrame implements ActionListener{
         cadastrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	dispose();
+                String cpf = cpfField.getText();
+                String nome = nomeField.getText();
+                String dataNascimento = dataNascimentoField.getText();
+                String dataHora = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                double peso = Double.parseDouble(pesoField.getText());
+                double altura = Double.parseDouble(alturaField.getText());
 
-                new TelaCadastrar();
+                if (cpf.isEmpty() || nome.isEmpty() || dataNascimento.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Todos os campos devem ser preenchidos", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                Aluno aluno = new Aluno(cpf, nome, dataNascimento, peso, altura);
+
+                AlunoDao alunoDao = new AlunoDao();
+                HistoricoDao historicoDao = new HistoricoDao();
+
+                if (alunoDao.cpfExiste(cpf)) {
+                    JOptionPane.showMessageDialog(null, "CPF já cadastrado", "Erro", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    // Cadastrar aluno na tabela aluno
+                    alunoDao.cadastrarAluno(aluno);
+
+                    // Cadastrar histórico de peso na tabela historico_peso
+                    Historico historico = new Historico(cpf, peso, dataHora);
+                    historicoDao.adicionaHistorico(historico);
+
+                    JOptionPane.showMessageDialog(null, "Aluno cadastrado com sucesso!");
+                }
             }
         });
+
 
         retornarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	dispose();
-
                 new TelaInicial();
             }
         });
@@ -98,6 +131,7 @@ public class TelaCadastrar extends JFrame implements ActionListener{
         frame.setSize(400, 300);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        setResizable(true);
     }
 
 

@@ -1,6 +1,7 @@
 package view;
 
 import dao.AlunoDao;
+import view.TelaHistorico;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -24,7 +25,9 @@ public class TelaLogin extends JFrame {
         setTitle("Login");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null); 
+        setLayout(null);
+        setResizable(true);
+        setLocationRelativeTo(null);
 
         jLabelTitle = new JLabel("Login");
         jLabelTitle.setBounds(170, 10, 100, 30);
@@ -52,45 +55,30 @@ public class TelaLogin extends JFrame {
         
         buttonVoltar = new JButton("Voltar");
         buttonVoltar.setBounds(130, 200, 120, 20);
-
-        buttonLogar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-               //condição de autenticação
-                AlunoDao aluno = new AlunoDao();
-                
-                if (aluno.cpfExiste(jTextCPF.getText())) {
-                    dispose();
-                    //new AlterarPeso(jTextCPF.getText());
-                    new TelaHistorico(null);
-                }else{      
-                JOptionPane.showMessageDialog(null, "CPF não cadastrado");
-                }
-                 throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
-                }
-        });
         
         buttonLogar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               //condição de autenticação
-                       
-                dispose();
-                new TelaLogin();
-       
-                 throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+            	
+            	AlunoDao alunoDao = new AlunoDao();
+            	
+            	if (alunoDao.cpfExiste(jTextCPF.getText())) {
+                    dispose();
+                    TelaHistorico telaHistorico = new TelaHistorico();
+                    telaHistorico.atualizarHistorico();
+                } else {
+                	JOptionPane.showMessageDialog(null, "CPF Inexistente, tente novamente!", "Erro", JOptionPane.ERROR_MESSAGE);
                 }
+            }
+
         });
         
         buttonCadastrar.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-               //condição de autenticação
-                       
+            public void actionPerformed(ActionEvent e) {           
                 dispose();
                 new TelaCadastrar();
        
-                 throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
                 }
         });
         
@@ -107,6 +95,8 @@ public class TelaLogin extends JFrame {
         add(buttonCadastrar);
         add(buttonVoltar);
         setVisible(true);
+        
+        
 
     }
     

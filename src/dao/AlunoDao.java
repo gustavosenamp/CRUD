@@ -6,59 +6,51 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.swing.JOptionPane;
 
 import gym.DatabaseConnection;
 import user.Aluno;
 
-
 public class AlunoDao {
-    
+
     private Connection connection;
-   
-    public AlunoDao(){ 
+
+    public AlunoDao() {
         this.connection = new DatabaseConnection().getConnection();
-    } 
-    
-    public void adicionaAluno(Aluno aluno){ 
-        String sql = "INSERT INTO cadastro(alu_nome, alu_cpf, alu_data_nascimento, alu_peso, alu_altura) VALUE(?,?,?,?,?)";
-        try { 
+    }
+
+    public void cadastrarAluno(Aluno aluno) {
+        String sql = "INSERT INTO aluno(cpf, nome, data_nascimento, peso, altura) VALUES(?,?,?,?,?)";
+        try {
             PreparedStatement stmt = connection.prepareStatement(sql);
-            
-            stmt.setString(1, aluno.getNome());
-            stmt.setString(2, aluno.getCpf());
-            //stmt.setNString(3, aluno.getData());
+
+            stmt.setString(1, aluno.getCpf());
+            stmt.setString(2, aluno.getNome());
+            stmt.setString(3, aluno.getData());
             stmt.setDouble(4, aluno.getPeso());
             stmt.setDouble(5, aluno.getAltura());
+
             stmt.execute();
             stmt.close();
-        } 
-        catch (SQLException u) { 
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Não foi possível cadastrar o Aluno");
-            throw new RuntimeException(u);
-        }         
-        
-    } 
-    
-    public boolean cpfExiste(String cpf){
-        String sql = "SELECT * FROM cadastro WHERE alu_cpf = ?";
-        try { 
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            
-            stmt.setString(1, cpf);
-            stmt.execute();
-            //stmt.close();
-            ResultSet resultSet = stmt.getResultSet();
-            
-            return resultSet.next();
-        } 
-        catch (SQLException u) { 
-            JOptionPane.showMessageDialog(null, "CPF não cadastrado");
-            return false;
-            //throw new RuntimeException(u);
-        } 
+            throw new RuntimeException(e);
+        }
     }
-    
+
+    public boolean cpfExiste(String cpf) {
+        String sql = "SELECT * FROM aluno WHERE cpf = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+
+            stmt.setString(1, cpf);
+            ResultSet resultSet = stmt.executeQuery();
+
+            return resultSet.next();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao verificar CPF");
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -7,6 +7,8 @@ import dao.HistoricoDao;
 import user.Historico;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,8 +21,8 @@ public class TelaHistorico extends JFrame {
     private JTable tabela;
     private DefaultTableModel modeloTabela;
 
-    public TelaHistorico(List<Historico> historicos) {
-        // Configuraçoes da janela
+    public TelaHistorico() {
+        // Configurações da janela
         setTitle("Histórico");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,37 +36,54 @@ public class TelaHistorico extends JFrame {
         tabela = new JTable(modeloTabela);
         JScrollPane scrollPane = new JScrollPane(tabela);
 
-        // Adicionando dados à tabela
-        for (Historico historico : historicos) {
-            modeloTabela.addRow(new Object[]{historico.getDataHora(), historico.getAluCpf(), historico.getPeso()});
-        }
+        // Botão "Logar"
+        JButton atualizarButton = new JButton("Atualizar Peso");
+        atualizarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        });
+        
+        JButton voltarButton = new JButton("Voltar");
+        voltarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Chama o método para atualizar o histórico
+            	dispose();
+            	new TelaLogin();
+            }
+        });
 
-        // Adicionando a tabela à janela
-        getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(scrollPane, BorderLayout.CENTER);
+        // Adicionando a tabela e o botão à janela
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(atualizarButton, BorderLayout.NORTH);
+        panel.add(voltarButton, BorderLayout.SOUTH);
+        getContentPane().add(panel);
 
         // Exibindo a janela
         setLocationRelativeTo(null);
         setVisible(true);
+        setResizable(true);
     }
 
-    public static List<Historico> obterHistoricoDoBanco() {
-        List<Historico> historicos = new ArrayList<>();
+    // Método para atualizar o histórico na tabela
+    public void atualizarHistorico() {
+        modeloTabela.setRowCount(0); // Limpa todas as linhas da tabela
 
-        // Crie um objeto HistoricoDao para interagir com o banco de dados
         HistoricoDao historicoDao = new HistoricoDao();
+        List<Historico> historicoList = historicoDao.obterHistorico();
 
-        try {
-            historicos = historicoDao.listarHistoricos();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao obter histórico do banco de dados: " + e.getMessage());
+        for (Historico historico : historicoList) {
+            Object[] rowData = {historico.getDataHora(), historico.getAluCpf(), historico.getPeso()};
+            modeloTabela.addRow(rowData);
         }
-
-        return historicos;
     }
-
-    public static void main(String[] args) {
-        // Criando a TelaHistorico e passando os objetos de Historico do banco de dados
-        SwingUtilities.invokeLater(() -> new TelaHistorico(obterHistoricoDoBanco()));
-    }
+    
+   
 }
+    
+
+    
+

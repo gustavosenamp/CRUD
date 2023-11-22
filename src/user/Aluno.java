@@ -5,11 +5,11 @@ import java.util.Date;
 public class Aluno {
 	private String cpf;
 	private String nome;
-	private Date data;
+	private String data;
 	private double peso;
 	private double altura;
 	
-	public Aluno(String cpf, String nome, Date data, double peso, double altura) {
+	public Aluno(String cpf, String nome, String data, double peso, double altura) {
 		super();
 		this.cpf = cpf;
 		this.nome = nome;
@@ -34,11 +34,11 @@ public class Aluno {
 		this.nome = nome;
 	}
 
-	public Date getData() {
+	public String getData() {
 		return data;
 	}
 
-	public void setData(Date data) {
+	public void setData(String data) {
 		this.data = data;
 	}
 

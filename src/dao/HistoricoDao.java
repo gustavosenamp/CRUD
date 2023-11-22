@@ -20,13 +20,13 @@ public class HistoricoDao {
     } 
     
     public void adicionaHistorico(Historico historico){ 
-        String sql = "INSERT INTO historico(alu_cpf, his_peso, his_dataHora) VALUE(?,?,?)";
+        String sql = "INSERT INTO historico_peso(cpf_aluno, data_hora, peso) VALUE(?,?,?)";
         try { 
             PreparedStatement stmt = connection.prepareStatement(sql);
             
             stmt.setString(1, historico.getAluCpf());
-            stmt.setDouble(2, historico.getPeso());
-            stmt.setString(3, historico.getDataHora());
+            stmt.setString(2, historico.getDataHora());
+            stmt.setDouble(3, historico.getPeso());
             stmt.execute();
             stmt.close();
         } 
@@ -37,25 +37,31 @@ public class HistoricoDao {
         
     }
     
-    public List<Historico> listarHistoricos() throws SQLException {
-        List<Historico> historicos = new ArrayList<>();
-        String sql = "SELECT * FROM historico";
+    public List<Historico> obterHistorico() {
+        List<Historico> historicoList = new ArrayList<>();
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    String aluCpf = rs.getString("alu_cpf");
-                    double peso = rs.getDouble("his_peso");
-                    String dataHora = rs.getString("his_dataHora");
+        String sql = "SELECT * FROM historico_peso";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet resultSet = stmt.executeQuery();
 
-                    Historico historico = new Historico(aluCpf, peso);
-                    historico.setDataHora(dataHora);
+            while (resultSet.next()) {
+                String aluCpf = resultSet.getString("cpf_aluno");
+                double peso = resultSet.getDouble("peso");
+                String dataHora = resultSet.getString("data_hora");
 
-                    historicos.add(historico);
-                }
+                Historico historico = new Historico(aluCpf, peso, dataHora);
+                historicoList.add(historico);
             }
+
+            stmt.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao obter histórico");
+            throw new RuntimeException(e);
         }
 
-        return historicos;
+        return historicoList;
     }
+    
+    
 }

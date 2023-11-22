@@ -18,6 +18,7 @@ public class TelaLogin extends JFrame {
     private JLabel jLabelTitle, jLabelCPF; 
     private JTextField jTextCPF;
     private JButton buttonLogar, buttonCadastrar, buttonVoltar;
+    private TelaLogin telaLogin;
     
     public TelaLogin(){
         setTitle("Login");
@@ -29,7 +30,7 @@ public class TelaLogin extends JFrame {
         jLabelTitle.setBounds(170, 10, 100, 30);
 
         // Configurar a fonte para torná-la maior e em negrito
-        Font titleFont = new Font("Arial", Font.BOLD, 24); // Você pode ajustar o tamanho da fonte conforme necessário
+        Font titleFont = new Font("Arial", Font.BOLD, 24); 
         jLabelTitle.setFont(titleFont);
 
         add(jLabelTitle);
@@ -69,6 +70,18 @@ public class TelaLogin extends JFrame {
                 }
         });
         
+        buttonLogar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               //condição de autenticação
+                       
+                dispose();
+                new TelaLogin();
+       
+                 throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+                }
+        });
+        
         buttonCadastrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -81,14 +94,12 @@ public class TelaLogin extends JFrame {
                 }
         });
         
-        buttonCadastrar.addActionListener(new ActionListener() {
+        buttonVoltar.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-               //condição de autenticação
-                       
-                dispose();
+            public void actionPerformed(ActionEvent e) {                       
+            	dispose();
                 new TelaInicial();
-                }
+            }
             
         });
         

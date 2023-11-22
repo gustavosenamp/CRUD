@@ -8,36 +8,31 @@ import java.awt.event.ActionListener;
 public class TelaInicial extends JFrame {
 
     public TelaInicial() {
-        JFrame frame = new JFrame("Gym Management System");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
-
-        // Create a panel to hold components
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-
+    	setTitle("Sistema de Gerenciamento da Academia");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(null);
         // Create a title label
-        JLabel titleLabel = new JLabel("Welcome to the Gym", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        panel.add(titleLabel, BorderLayout.CENTER);
+        JLabel titleLabel = new JLabel("Bem-vindo a Academia");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 15));
+        titleLabel.setBounds(110, 50, 240, 30);
+        add(titleLabel);
 
         // Create buttons
-        JButton registerButton = new JButton("Register");
-        JButton loginButton = new JButton("Login");
-
-        // Create a panel for buttons
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(registerButton);
-        buttonPanel.add(loginButton);
-
-        // Add button panel to the center of the main panel
-        panel.add(buttonPanel, BorderLayout.NORTH);
+        JButton registerButton = new JButton("Cadastre-se");
+        registerButton.setBounds(130, 120, 120, 25);
+        add(registerButton);
+        
+        JButton loginButton = new JButton("Entrar");
+        loginButton.setBounds(130, 150, 120, 25);
+        add(loginButton);
 
         // Add action listeners to the buttons
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Add your logic for the register button here
+            	dispose();
                 new TelaCadastrar();
             }
         });
@@ -45,14 +40,11 @@ public class TelaInicial extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	dispose();
                 new TelaLogin();
             }
         });
 
-        // Add the main panel to the frame
-        frame.getContentPane().add(panel);
-
-        // Set the frame to be visible
-        frame.setVisible(true);
+        setVisible(true);
     }
 }

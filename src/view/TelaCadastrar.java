@@ -55,7 +55,7 @@ public class TelaCadastrar extends JFrame implements ActionListener{
         alturaField.setFont(textFieldFont);
 
         JButton cadastrarButton = new JButton("Cadastrar");
-        JButton voltarButton = new JButton("Voltar");
+        JButton retornarButton = new JButton("Voltar");
 
         formPanel.add(cpfLabel);
         formPanel.add(cpfField);
@@ -71,19 +71,22 @@ public class TelaCadastrar extends JFrame implements ActionListener{
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(cadastrarButton);
-        buttonPanel.add(voltarButton);
+        buttonPanel.add(retornarButton);
         
         cadastrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Add your logic for the register button here
+            	dispose();
+
                 new TelaCadastrar();
             }
         });
 
-        voltarButton.addActionListener(new ActionListener() {
+        retornarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	dispose();
+
                 new TelaInicial();
             }
         });

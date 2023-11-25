@@ -30,7 +30,7 @@ public class TelaLogin extends JFrame {
         setLocationRelativeTo(null);
 
         jLabelTitle = new JLabel("Login");
-        jLabelTitle.setBounds(170, 10, 100, 30);
+        jLabelTitle.setBounds(160, 10, 100, 30);
 
         // Configurar a fonte para torná-la maior e em negrito
         Font titleFont = new Font("Arial", Font.BOLD, 24); 
@@ -64,12 +64,11 @@ public class TelaLogin extends JFrame {
             	
             	if (alunoDao.cpfExiste(jTextCPF.getText())) {
                     dispose();
-                    TelaHistorico telaHistorico = new TelaHistorico();
-                    telaHistorico.atualizarHistorico();
+                    new TelaOpcoes(jTextCPF.getText());
                 } else {
                 	JOptionPane.showMessageDialog(null, "CPF Inexistente, tente novamente!", "Erro", JOptionPane.ERROR_MESSAGE);
                 }
-            }
+            } 
 
         });
         

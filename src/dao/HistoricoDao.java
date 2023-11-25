@@ -37,31 +37,5 @@ public class HistoricoDao {
         
     }
     
-    public List<Historico> obterHistorico() {
-        List<Historico> historicoList = new ArrayList<>();
-
-        String sql = "SELECT * FROM historico_peso";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            ResultSet resultSet = stmt.executeQuery();
-
-            while (resultSet.next()) {
-                String aluCpf = resultSet.getString("cpf_aluno");
-                double peso = resultSet.getDouble("peso");
-                String dataHora = resultSet.getString("data_hora");
-
-                Historico historico = new Historico(aluCpf, peso, dataHora);
-                historicoList.add(historico);
-            }
-
-            stmt.close();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao obter histórico");
-            throw new RuntimeException(e);
-        }
-
-        return historicoList;
+    
     }
-    
-    
-}

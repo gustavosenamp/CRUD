@@ -107,7 +107,7 @@ public class TelaCadastrar extends JFrame implements ActionListener{
                     alunoDao.cadastrarAluno(aluno);
 
                     // Cadastrar histórico de peso na tabela historico_peso
-                    Historico historico = new Historico(cpf, peso, dataHora);
+                    Historico historico = new Historico(cpf, peso);
                     historicoDao.adicionaHistorico(historico);
 
                     JOptionPane.showMessageDialog(null, "Aluno cadastrado com sucesso!");

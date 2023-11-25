@@ -53,4 +53,32 @@ public class AlunoDao {
             throw new RuntimeException(e);
         }
     }
+    
+    public void excluirAlunoPorCpf(String cpf) {
+        try (Connection connection = new DatabaseConnection().getConnection()) {
+            String queryExcluirHistorico = "DELETE FROM historico_peso WHERE cpf_aluno = ?";
+            String queryExcluirAluno = "DELETE FROM aluno WHERE cpf = ?";
+
+            try (PreparedStatement pstmtHistorico = connection.prepareStatement(queryExcluirHistorico);
+                 PreparedStatement pstmtAluno = connection.prepareStatement(queryExcluirAluno)) {
+
+                // Excluir do histórico primeiro, pois pode haver uma restrição de chave estrangeira
+                pstmtHistorico.setString(1, cpf);
+                pstmtHistorico.executeUpdate();
+
+                // Agora, excluir o aluno
+                pstmtAluno.setString(1, cpf);
+                pstmtAluno.executeUpdate();
+
+                System.out.println("Aluno excluído com sucesso!");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Erro ao excluir aluno.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Erro ao conectar ao banco de dados.");
+        }
+    }
 }

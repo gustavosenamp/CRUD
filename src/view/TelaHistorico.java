@@ -4,81 +4,100 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import dao.HistoricoDao;
+import gym.DatabaseConnection;
 import user.Historico;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class TelaHistorico extends JFrame {
 
+	private JScrollPane scroll;
     private JTable tabela;
-    private DefaultTableModel modeloTabela;
+    private DefaultTableModel model;
+    private JButton jButtonVoltar;
+    private String cpf;
 
-    public TelaHistorico() {
-        // Configurações da janela
-        setTitle("Histórico");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public TelaHistorico(String cpf) {
+    	 super("Histórico de Pesos");
 
-        // Inicialização da tabela
-        modeloTabela = new DefaultTableModel();
-        modeloTabela.addColumn("Data e Hora");
-        modeloTabela.addColumn("Aluno CPF");
-        modeloTabela.addColumn("Peso");
+         this.cpf = cpf;
 
-        tabela = new JTable(modeloTabela);
-        JScrollPane scrollPane = new JScrollPane(tabela);
+         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Botão "Logar"
-        JButton atualizarButton = new JButton("Atualizar Peso");
-        atualizarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
+         tabela = new JTable();
+         scroll = new JScrollPane(tabela);
+
+         setSize(400, 300);
+         setLocationRelativeTo(null);
+         setVisible(true);
+
+         add(scroll);
+         
+         jButtonVoltar = new JButton("Voltar");
+         jButtonVoltar.setBounds(10, 10, 10, 10);
+         jButtonVoltar.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+
+                 dispose();
+
+                 new TelaOpcoes(cpf);
+             }
+             
+         });
+         add(jButtonVoltar, BorderLayout.SOUTH);
+
+         preencherTabela();
+
+         
+
+     }
+
+    private void preencherTabela() {
+        Vector<Vector<Object>> data = new Vector<>();
+        Vector<String> columnNames = new Vector<>();
+        columnNames.add("CPF");
+        columnNames.add("Peso (Kg)");
+        columnNames.add("Data e Hora");
+
+        try {
+            Connection connection = new DatabaseConnection().getConnection();
+
+            String query = "SELECT * FROM historico_peso WHERE cpf_aluno = '" + cpf + "'";
+            try (PreparedStatement pstmt = connection.prepareStatement(query);
+                 ResultSet rs = pstmt.executeQuery()) {
+
+                while (rs.next()) {
+                    Vector<Object> row = new Vector<>();
+                    row.add(rs.getString("cpf_aluno"));
+                    row.add(rs.getDouble("peso"));
+
+                    // Formatando Timestamp para uma String
+                    java.sql.Timestamp dataHoraTimestamp = rs.getTimestamp("data_hora");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String dataHora = dateFormat.format(dataHoraTimestamp);
+
+                    row.add(dataHora);
+                    data.add(row);
+                }
             }
-        });
-        
-        JButton voltarButton = new JButton("Voltar");
-        voltarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Chama o método para atualizar o histórico
-            	dispose();
-            	new TelaLogin();
-            }
-        });
-
-        // Adicionando a tabela e o botão à janela
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(atualizarButton, BorderLayout.NORTH);
-        panel.add(voltarButton, BorderLayout.SOUTH);
-        getContentPane().add(panel);
-
-        // Exibindo a janela
-        setLocationRelativeTo(null);
-        setVisible(true);
-        setResizable(true);
-    }
-
-    // Método para atualizar o histórico na tabela
-    public void atualizarHistorico() {
-        modeloTabela.setRowCount(0); // Limpa todas as linhas da tabela
-
-        HistoricoDao historicoDao = new HistoricoDao();
-        List<Historico> historicoList = historicoDao.obterHistorico();
-
-        for (Historico historico : historicoList) {
-            Object[] rowData = {historico.getDataHora(), historico.getAluCpf(), historico.getPeso()};
-            modeloTabela.addRow(rowData);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        model = new DefaultTableModel(data, columnNames);
+        tabela.setModel(model);
     }
     
    

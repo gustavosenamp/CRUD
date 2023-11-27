@@ -1,6 +1,7 @@
 package view;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -13,6 +14,7 @@ import user.Historico;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
@@ -137,56 +139,61 @@ public class TelaOpcoes extends JFrame {
         setVisible(true);
     }
     
-    private void calcularIMC(String cpf) {
-        try (Connection connection = new DatabaseConnection().getConnection()) {
-            String query = "SELECT nome, peso, altura, data_nascimento FROM aluno WHERE cpf = ?";
-            
-            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-                pstmt.setString(1, cpf);
+    private static void calcularIMC(String cpf) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Choose a file to save IMC data");
+        int userSelection = fileChooser.showSaveDialog(null);
 
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    if (rs.next()) {
-                        String nome = rs.getString("nome");
-                        double peso = rs.getDouble("peso");
-                        double altura = rs.getDouble("altura");
-                        String dataNascimento = rs.getString("data_nascimento");
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            try (Connection connection = new DatabaseConnection().getConnection()) {
+                String query = "SELECT nome, peso, altura, data_nascimento FROM aluno WHERE cpf = ?";
 
-                        // Realizar o cálculo do IMC
-                        double imc = calcularIMC(peso, altura);
+                try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                    pstmt.setString(1, cpf);
 
-                        // Interpretar o resultado do IMC
-                        String interpretacao = interpretarIMC(imc);
+                    try (ResultSet rs = pstmt.executeQuery()) {
+                        if (rs.next()) {
+                            String nome = rs.getString("nome");
+                            double peso = rs.getDouble("peso");
+                            double altura = rs.getDouble("altura");
 
-                        // Obter data e hora atual
-                        LocalDateTime dataHoraAtual = LocalDateTime.now();
-                        DateTimeFormatter formatterDataHora = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                        String dataHoraFormatada = dataHoraAtual.format(formatterDataHora);
+                            // Realizar o cálculo do IMC
+                            double imc = calcularIMC(peso, altura);
 
-                        // Criar linha para ser gravada no arquivo
-                        String linha = dataHoraFormatada + " - CPF: " + cpf + ", Nome: " + nome +
-                                ", IMC: " + String.format("%.2f", imc) + ", Interpretação: " + interpretacao;
+                            // Interpretar o resultado do IMC
+                            String interpretacao = interpretarIMC(imc);
 
-                        // Gravar a linha no arquivo
-                        gravarNoArquivo(linha);
+                            // Obter data e hora atual
+                            LocalDateTime dataHoraAtual = LocalDateTime.now();
+                            DateTimeFormatter formatterDataHora = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                            String dataHoraFormatada = dataHoraAtual.format(formatterDataHora);
 
-                        System.out.println("Cálculo de IMC gravado com sucesso!");
+                            // Criar linha para ser gravada no arquivo
+                            String linha = dataHoraFormatada + " - CPF: " + cpf + ", Nome: " + nome +
+                                    ", IMC: " + String.format("%.2f", imc) + ", Interpretação: " + interpretacao;
 
-                    } else {
-                        System.out.println("Aluno não encontrado.");
+                            // Gravar a linha no arquivo
+                            gravarNoArquivo(linha, fileChooser.getSelectedFile());
+
+                            System.out.println("Cálculo de IMC gravado com sucesso!");
+
+                        } else {
+                            System.out.println("Aluno não encontrado.");
+                        }
                     }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Erro ao conectar ao banco de dados.");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Erro ao conectar ao banco de dados.");
         }
     }
 
-    private double calcularIMC(double peso, double altura) {
+    private static double calcularIMC(double peso, double altura) {
         return peso / (altura * altura);
     }
 
-    private String interpretarIMC(double imc) {
+    private static String interpretarIMC(double imc) {
         if (imc < 18.5) {
             return "Abaixo do peso";
         } else if (imc < 24.9) {
@@ -196,10 +203,8 @@ public class TelaOpcoes extends JFrame {
         }
     }
 
-    private void gravarNoArquivo(String linha) {
-        String nomeArquivo = "historico_imc.txt";
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nomeArquivo, true))) {
+    private static void gravarNoArquivo(String linha, File selectedFile) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFile, true))) {
             writer.write(linha);
             writer.newLine();
         } catch (IOException e) {
@@ -207,6 +212,7 @@ public class TelaOpcoes extends JFrame {
             System.out.println("Erro ao gravar no arquivo.");
         }
     }
+
 
 
 }
